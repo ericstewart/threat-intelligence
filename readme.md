@@ -1,5 +1,9 @@
 # Threat Intelligence
 
+## Design/Architecutre Decisions
+
+This project keeps [Architecture Decision Records](https://adr.github.io) to document why many decisions were made. View them in the [`docs/decisions`](docs/decisions/) directory.
+
 ## Structured Using Polylith
 
 <img src="logo.png" width="30%" alt="Polylith" id="logo">
