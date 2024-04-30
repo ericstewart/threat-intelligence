@@ -5,3 +5,7 @@
   returns a Map representing the data for the indicator."
   [indicator-db indicator-id]
   (first (filter #(= (% "id") indicator-id) indicator-db)))
+
+(defn get-all
+  [indicator-db]
+  indicator-db)

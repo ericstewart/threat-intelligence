@@ -6,3 +6,8 @@
   returns a Map representing the data for the indicator."
   [indicator-db indicator-id]
   (core/find-by-id indicator-db indicator-id))
+
+
+(defn get-all
+  [indicator-db]
+  (core/get-all indicator-db))

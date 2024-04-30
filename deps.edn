@@ -1,9 +1,11 @@
 {:aliases  {:dev {:extra-paths ["development/src"]
 
                   :extra-deps {threat-intelligence/compromise-indicator {:local/root "components/compromise-indicator"}
+                               threat-intelligence/rest-api {:local/root "bases/rest-api"}
                                org.clojure/clojure {:mvn/version "1.11.1"}}}
 
-            :test {:extra-paths ["components/compromise-indicator"]}
+            :test {:extra-paths ["components/compromise-indicator"
+                                 "bases/rest-api"]}
 
 
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]
