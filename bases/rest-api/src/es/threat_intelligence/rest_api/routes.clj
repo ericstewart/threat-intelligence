@@ -6,14 +6,11 @@
             [es.threat-intelligence.compromise-indicator.interface :as compromise-indicator]
             [es.threat-intelligence.feed.interface :as feed]))
 
-#_(defn get-indicators
-    [request]
-    (let [indicator-db (feed/indicators)
-          indicators (compromise-indicator/get-all indicator-db)]
-      {:status 200
-       :body indicators}))
 
-(defn response [status body & {:as headers}]
+(defn response
+  "Create a response map given the specified status
+   and body and include any optional headers."
+  [status body & {:as headers}]
   {:status status :body body :headers headers})
 
 (def ok (partial response 200))
