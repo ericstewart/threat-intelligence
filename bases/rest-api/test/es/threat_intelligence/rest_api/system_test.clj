@@ -25,8 +25,7 @@
 
 ;;----------------------------------------------------------------
 ;; Borrowed from Pedestal docs on testing
-(def url-for (route/url-for-routes
-               routes/routes))
+(def url-for (route/url-for-routes routes/routes))
 
 (defn service-fn
   [system]
@@ -45,17 +44,27 @@
     (testing "GET on /indicators with default headers"
       (let [service (service-fn sut)
             {:keys [status body headers] :as response} (response-for service :get (url-for :indicators))
-            body-map (json/read-str body)]
+            body-json (json/read-str body)]
         (is (= 200 status) "should be a successful response")
         (is (= "application/json" (headers "Content-Type")) "should be a json response")
-        (is (= minimal-indicator-data body-map) "body should contain expected records")))
+        (is (= minimal-indicator-data body-json) "body should contain expected records")))
 
     (testing "GET on /indicators with Accept header set to an invalid type"
       (let [service (service-fn sut)
             {:keys [status body headers] :as response} (response-for service :get (url-for :indicators) :headers {"Accept" "text/plain"})]
         (is (= 406 status) "should be a not acceptable response")
         (is (= "application/json" (headers "Content-Type")) "should be JSON")
-        (is (= "\"Not Acceptable\"" body) "body should indicate 'Not Acceptable'")))))
+        (is (= "\"Not Acceptable\"" body) "body should indicate 'Not Acceptable'")))
+
+    (testing "GET on /indicators with type filtering"
+      (let [service (service-fn sut)
+            {:keys [status body headers] :as response}
+            (response-for service :get (url-for :indicators :query-params {:type "IPv4"}))
+            body-json (json/read-str body)]
+        (is (= 200 status) "should be a successful response")
+        (is (= "application/json" (headers "Content-Type")) "should be a json response")
+        (is (= 2 (count body-json)) "body should contain expected records")
+        (is (= [{"id" 12345 "type" "IPv4"} {"id" 41234 "type" "IPv4"}] body-json) "body should contain expected records")))))
 
 (deftest get-single-indicator-test
   (with-system [sut (sut/new-system :test)]
@@ -64,25 +73,28 @@
       (let [service (service-fn sut)
             {:keys [status body headers] :as response}
             (response-for service :get (url-for :indicators-item-view :path-params {:id 12346}))
-            body-map (json/read-str body)]
+            body-json (json/read-str body)]
+
         (is (= 200 status) "should be a successful response")
         (is (= "application/json" (headers "Content-Type")) "should be a json response")
-        (is (= {"id" 12346 "type" "FileHash-SHA256"} body-map) "body should contain the specific record")))
+        (is (= {"id" 12346 "type" "FileHash-SHA256"} body-json) "body should contain the specific record")))
 
     (testing "GET on /indicators/:id with id that doesn't exist"
       (let [service (service-fn sut)
             {:keys [status body headers] :as response}
             (response-for service :get (url-for :indicators-item-view :path-params {:id 99999}))
-            body-map (json/read-str body)]
+            body-json (json/read-str body)]
+
         (is (= 404 status) "should indicate that the resource doesn't exist")
         (is (= "application/json" (headers "Content-Type")) "should be a json response")
-        (is (= nil body-map) "body should be empty")))
+        (is (= nil body-json) "body should be empty")))
 
     (testing "GET on /indicators/:id with non numeric id"
       (let [service (service-fn sut)
             {:keys [status body headers] :as response}
             (response-for service :get (url-for :indicators-item-view :path-params {:id "alphaid"}))
-            body-map (json/read-str body)]
+            body-json (json/read-str body)]
+
         (is (= 404 status) "should be a not found response")
         (is (= "application/json" (headers "Content-Type")) "should be a json response")
-        (is (= nil body-map) "body should be empty when not found")))))
+        (is (= nil body-json) "body should be empty when not found")))))

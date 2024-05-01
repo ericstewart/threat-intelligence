@@ -8,10 +8,11 @@
    :enter (fn [context]
             (let [request (:request context)
                   indicator-id (get-in context [:request :path-params :id])
+                  type-filter (get-in context [:request :query-params :type])
                   indicator-db (feed/indicators)
                   indicators (if indicator-id
                                (compromise-indicator/find-by-id indicator-db indicator-id)
-                               (compromise-indicator/get-all indicator-db))
+                               (compromise-indicator/get-all indicator-db type-filter))
                   response (if indicators
                              (route-utils/ok indicators)
                              (route-utils/not-found nil))]

@@ -9,5 +9,11 @@
 
 
 (defn get-all
-  [indicator-data]
-  (core/get-all indicator-data))
+  "Return all indicators.
+
+   If a type-filter parameter is given, return only indicators
+   that match the specified type"
+  ([indicator-data]
+   (get-all indicator-data nil))
+  ([indicator-data type-filter]
+   (core/get-all indicator-data type-filter)))
