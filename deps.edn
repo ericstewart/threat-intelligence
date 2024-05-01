@@ -1,10 +1,14 @@
 {:aliases  {:dev {:extra-paths ["development/src"]
 
-                  :extra-deps {threat-intelligence/compromise-indicator {:local/root "components/compromise-indicator"}
+                  :extra-deps {threat-intelligence/feed {:local/root "components/feed"}
+                               threat-intelligence/compromise-indicator {:local/root "components/compromise-indicator"}
                                threat-intelligence/rest-api {:local/root "bases/rest-api"}
+
+                               com.stuartsierra/component.repl {:mvn/version "0.2.0"}
                                org.clojure/clojure {:mvn/version "1.11.1"}}}
 
-            :test {:extra-paths ["components/compromise-indicator"
+            :test {:extra-paths ["components/feed"
+                                 "components/compromise-indicator"
                                  "bases/rest-api"]}
 
 

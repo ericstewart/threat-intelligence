@@ -3,9 +3,9 @@
 (defn find-by-id
   "Given indicator data and the unique identifier of a Compromise Indicatgor,
   returns a Map representing the data for the indicator."
-  [indicator-db indicator-id]
-  (first (filter #(= (% "id") indicator-id) indicator-db)))
+  [indicator-data indicator-id]
+  (first (filter #(= (% "id") indicator-id) indicator-data)))
 
 (defn get-all
-  [indicator-db]
-  indicator-db)
+  [indicator-data]
+  indicator-data)
