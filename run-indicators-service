@@ -1,0 +1,7 @@
+#!/bin/sh
+
+java -jar projects/indicators-service/target/indicators-service.jar
+
+# To test once running, try:
+#
+# curl -i http://127.0.0.1:8890/indicators

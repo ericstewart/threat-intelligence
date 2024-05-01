@@ -2,6 +2,7 @@
   (:require [es.threat-intelligence.feed.core :as core]))
 
 (defn indicators
-  "Return all current items in the feed"
+  "Return all current items in the feed.  This is a raw,
+   unsorted list of indicators"
   []
   (core/feed-items))
