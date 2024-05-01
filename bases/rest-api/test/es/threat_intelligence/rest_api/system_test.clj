@@ -10,7 +10,7 @@
             [clojure.data.json :as json]
             [clojure.test :as test :refer :all]))
 
-(def minimal-indicator-data [{"id" 12345} {"id" 12346} {"id" 41234}])
+(def minimal-indicator-data [{"id" 12345 "type" "IPv4"} {"id" 12346 "type" "FileHash-SHA256"} {"id" 41234 "type" "IPv4"}])
 
 ;;---------------------------------------------------------------
 ;; Technique borrowed from clojure-polylith-relworld-example-app
@@ -56,3 +56,33 @@
         (is (= 406 status) "should be a not acceptable response")
         (is (= "application/json" (headers "Content-Type")) "should be JSON")
         (is (= "\"Not Acceptable\"" body) "body should indicate 'Not Acceptable'")))))
+
+(deftest get-single-indicator-test
+  (with-system [sut (sut/new-system :test)]
+
+    (testing "GET on /indicators/:id"
+      (let [service (service-fn sut)
+            {:keys [status body headers] :as response}
+            (response-for service :get (url-for :indicators-item-view :path-params {:id 12346}))
+            body-map (json/read-str body)]
+        (is (= 200 status) "should be a successful response")
+        (is (= "application/json" (headers "Content-Type")) "should be a json response")
+        (is (= {"id" 12346 "type" "FileHash-SHA256"} body-map) "body should contain the specific record")))
+
+    (testing "GET on /indicators/:id with id that doesn't exist"
+      (let [service (service-fn sut)
+            {:keys [status body headers] :as response}
+            (response-for service :get (url-for :indicators-item-view :path-params {:id 99999}))
+            body-map (json/read-str body)]
+        (is (= 404 status) "should indicate that the resource doesn't exist")
+        (is (= "application/json" (headers "Content-Type")) "should be a json response")
+        (is (= nil body-map) "body should be empty")))
+
+    (testing "GET on /indicators/:id with non numeric id"
+      (let [service (service-fn sut)
+            {:keys [status body headers] :as response}
+            (response-for service :get (url-for :indicators-item-view :path-params {:id "alphaid"}))
+            body-map (json/read-str body)]
+        (is (= 404 status) "should be a not found response")
+        (is (= "application/json" (headers "Content-Type")) "should be a json response")
+        (is (= nil body-map) "body should be empty when not found")))))

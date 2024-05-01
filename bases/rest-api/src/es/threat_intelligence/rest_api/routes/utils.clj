@@ -7,3 +7,4 @@
   {:status status :body body :headers headers})
 
 (def ok (partial response 200))
+(def not-found (partial response 404))

@@ -7,7 +7,12 @@
   {:name ::get-indicators
    :enter (fn [context]
             (let [request (:request context)
+                  indicator-id (get-in context [:request :path-params :id])
                   indicator-db (feed/indicators)
-                  indicators (compromise-indicator/get-all indicator-db)
-                  response (route-utils/ok indicators)]
+                  indicators (if indicator-id
+                               (compromise-indicator/find-by-id indicator-db indicator-id)
+                               (compromise-indicator/get-all indicator-db))
+                  response (if indicators
+                             (route-utils/ok indicators)
+                             (route-utils/not-found nil))]
               (assoc context :response response)))})

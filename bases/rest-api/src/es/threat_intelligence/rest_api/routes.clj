@@ -11,4 +11,8 @@
        :get [interceptors/coerce-body-interceptor
              interceptors/content-negotiation-interceptor
              indicator-routes/get-indicators-interceptor]
-       :route-name :indicators]}))
+       :route-name :indicators]
+      ["/indicators/:id" :get [interceptors/coerce-body-interceptor
+                               interceptors/content-negotiation-interceptor
+                               indicator-routes/get-indicators-interceptor]
+       :route-name :indicators-item-view]}))
