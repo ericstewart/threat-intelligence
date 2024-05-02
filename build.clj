@@ -66,6 +66,7 @@
                           (str "target/" project ".jar"))
             opts      (merge opts
                              {:basis        (b/create-basis)
+
                               :class-dir    class-dir
                               :compile-opts {:direct-linking true}
                               :main         main

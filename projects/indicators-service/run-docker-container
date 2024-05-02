@@ -1,3 +1,4 @@
 #!/bin/sh
 
+cd "${0%/*}"
 docker run -it --rm --publish 8890:8890 --name running-indicators-service indicators-service

@@ -1,3 +1,4 @@
 #!/bin/sh
 
+cd "${0%/*}"
 clojure -T:build uberjar :project indicators-service

@@ -1,3 +1,8 @@
 #!/bin/sh
 
-docker build -t indicators-service .
+cd "${0%/*}"
+if test -f target/indicators-service.jar; then
+  docker build -t indicators-service .
+else
+  echo "Service jar not found: 'target/indicators-service.jar'. Please run ../../build-indicators-service"
+fi
