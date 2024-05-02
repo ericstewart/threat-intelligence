@@ -4,14 +4,23 @@
 
 ;; For now we are based on seed data to get the project moving.
 (def source
-  (json/parse-stream (io/reader (io/resource "feed/indicators.json"))))
+  (-> (io/resource "feed/indicators.json")
+      (io/reader)
+      (json/parse-stream)))
+
+(def indicators
+  (->> source
+       (reduce (fn [coll val]
+                 (conj coll (get-in val ["indicators"]))) [])
+       flatten))
 
 (defn feed-items
   "Fetch all indicators from the seed data"
   []
-  (get-in (first source) ["indicators"]))
+  indicators)
 
 (comment
-  (take 1 source)
+  (take 1 (feed-items))
   (feed-items)
+  (count (source))
   :rcf)

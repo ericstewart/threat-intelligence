@@ -3,7 +3,7 @@
             [es.threat-intelligence.compromise-indicator.interface :as compromise-indicator]))
 
 (def empty-indicator-data [])
-(def minimal-indicator-data [{"id" 12345 "type" "Type1"} {"id" 12346 "type" "Type2"} {"id" 41234}])
+(def minimal-indicator-data [{"id" 12345 "type" "Type1"} {"id" 12346 "type" "Type-2"} {"id" 41234}])
 
 (deftest test-find-by-id-bad-inputs
   (testing "find-by-id with bad inputs"
@@ -23,4 +23,5 @@
 (deftest test-get-all-with-type-filtering
   (testing "get all with type filtering"
     (is (= empty-indicator-data (compromise-indicator/get-all empty-indicator-data "Type2")))
-    (is (= [{"id" 12345 "type" "Type1"}] (compromise-indicator/get-all minimal-indicator-data "Type1")))))
+    (is (= [{"id" 12345 "type" "Type1"}] (compromise-indicator/get-all minimal-indicator-data "Type1")))
+    (is (= [{"id" 12346 "type" "Type-2"}] (compromise-indicator/get-all minimal-indicator-data "Type-2")))))

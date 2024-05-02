@@ -64,7 +64,18 @@
         (is (= 200 status) "should be a successful response")
         (is (= "application/json" (headers "Content-Type")) "should be a json response")
         (is (= 2 (count body-json)) "body should contain expected records")
-        (is (= [{"id" 12345 "type" "IPv4"} {"id" 41234 "type" "IPv4"}] body-json) "body should contain expected records")))))
+        (is (= [{"id" 12345 "type" "IPv4"} {"id" 41234 "type" "IPv4"}] body-json) "body should contain expected records")))
+
+    (testing "GET on /indicators with type filtering (type with escaped characters)"
+      (let [service (service-fn sut)
+            {:keys [status body headers] :as response}
+            (response-for service :get (url-for :indicators :query-params {:type "FileHash-SHA256"}))
+            body-json (json/read-str body)]
+
+        (is (= 200 status) "should be a successful response")
+        (is (= "application/json" (headers "Content-Type")) "should be a json response")
+        (is (= 1 (count body-json)) "body should contain expected records")
+        (is (= [{"id" 12346 "type" "FileHash-SHA256"}] body-json) "body should contain expected records")))))
 
 (deftest get-single-indicator-test
   (with-system [sut (sut/new-system :test)]

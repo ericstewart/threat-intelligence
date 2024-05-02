@@ -5,4 +5,4 @@
 ;; Since the current implementation is based off a set of fixed seed data, verify
 ;; That we hav eloaded that
 (deftest test-indicators-load
-  (is (= 588 (count (feed/indicators)))))
+  (is (= 18077 (count (feed/indicators)))))
