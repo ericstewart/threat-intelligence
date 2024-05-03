@@ -5,8 +5,8 @@
                                threat-intelligence/log {:local/root "components/log"}
                                threat-intelligence/rest-api {:local/root "bases/rest-api"}
 
-                               com.stuartsierra/component.repl {:mvn/version "0.2.0"}
-                               org.clojure/clojure {:mvn/version "1.11.1"}}}
+                               com.stuartsierra/component.repl {:mvn/version "1.0.0"}
+                               org.clojure/clojure {:mvn/version "1.11.3"}}}
 
             :test {:extra-paths ["components/feed"
                                  "components/compromise-indicator"

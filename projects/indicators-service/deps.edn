@@ -2,7 +2,7 @@
         es.threat-intelligence.feed {:local/root "../../components/feed"}
         es.threat-intelligence.log {:local/root "../../components/log"}
         es.threat-intelligence.rest-api. {:local/root "../../bases/rest-api"}
-        org.clojure/clojure {:mvn/version "1.11.1"}}
+        org.clojure/clojure {:mvn/version "1.11.3"}}
 
  :aliases {:test {:extra-paths []
                   :extra-deps  {}}
