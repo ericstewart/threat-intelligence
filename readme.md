@@ -18,7 +18,7 @@ With more time, I'm considering looking at some of the following goals
 * Add an alternative logging component that uses another logger more condusive to observability
 * Expriment with how an upgrade of something significant (like new major version of Pedestal) would be supported by Polylith
 * Add to the development project to make interactive coding via the REPL/editor on components/bases easier 
-* Look at components for configuration
+* Add a component for managing configuration
 
 ## Structured Using Polylith
 
