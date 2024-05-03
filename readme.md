@@ -2,8 +2,23 @@
 
 This repository has started as an exercise in demonstrating the building/organization of (initially) microservices related to the domain of Thread Intelligence in Cybersecurity.  
 
-The implemenation technology stack is Clojure.
+## Goals
 
+* Demonstrate building a simple service for accessing data using Clojure
+* Leverage Polylith (see details below)
+* Use as a basis for ongoing exploration of techniques using Clojure, Polylith, and software design
+
+## Future Items
+
+With more time, I'm considering looking at some of the following goals
+
+* Improve the indicator search capability (allowing multiple criteria per field, options to AND/OR, and include more fields from the source data)
+* Continue refactoring to see if there are bits of the rest-api (Pedestal) that can be extracted to Polylith components cleanly and better leverage Clojure's Component library across Polylith components
+* Add a new component for the indicator lookup/search that uses a database component as a backend (seeded by the source data). Might consider Sqlite, Datalevin, XTDB, or something similar. 
+* Add an alternative logging component that uses another logger more condusive to observability
+* Expriment with how an upgrade of something significant (like new major version of Pedestal) would be supported by Polylith
+* Add to the development project to make interactive coding via the REPL/editor on components/bases easier 
+* Look at components for configuration
 
 ## Structured Using Polylith
 
@@ -20,6 +35,28 @@ You can also get in touch with the Polylith Team on [Slack](https://clojurians.s
 ## Design/Architecture Decisions
 
 This project keeps [Architecture Decision Records](https://adr.github.io) to document why many decisions were made. View them in the [`docs/decisions`](docs/decisions/) directory.
+
+There were also a number of resources used in building this for reference and ideas.  See [citations](citations)
+
+## Building/Running
+
+To build the indicators service, you can build an uberjar using the following script:
+
+`./build-indicators-service`
+
+Then, to run the service from the built uberjar, use the run script:
+
+`./run-indicators-service`
+
+If you would like to build a Docker container, once an uberjar is built, use:
+
+`projects/indicators-service/build-docker-container`
+
+And for convenience, you can run the docker container with this
+
+`projects/indicators-service/run-docker-container`
+
+By default, the service runs on port 8890 and listens on all interfaces for convenience running inside a Docker container.
 
 ## Trying it out
 
