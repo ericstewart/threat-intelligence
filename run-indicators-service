@@ -2,10 +2,10 @@
 
 cd "${0%/*}"
 
-if test -f target/indicators-service.jar; then
+if test -f projects/indicators-service/target/indicators-service.jar; then
     java -jar projects/indicators-service/target/indicators-service.jar
 else
-    echo "Service jar not found: 'target/indicators-service.jar'. Please run ../../build-indicators-service"
+    echo "Service jar not found: 'projects/indicators-service/target/indicators-service.jar'. Please run ../../build-indicators-service"
 fi
 
 # To test once running, try:
