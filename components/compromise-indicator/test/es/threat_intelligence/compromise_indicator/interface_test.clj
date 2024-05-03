@@ -24,11 +24,21 @@
   (testing "get all with type filtering"
     (is (= empty-indicator-data (compromise-indicator/get-all empty-indicator-data "Type2")))
     (is (= [{"id" 12345 "type" "Type1"} {"id" 41234 "type" "Type1" "author_name" "carefulresearcher"}] (compromise-indicator/get-all minimal-indicator-data "Type1")))
-    (is (= [{"id" 12346 "type" "Type-2"}] (compromise-indicator/get-all minimal-indicator-data "Type-2")))))
+    (is (= [{"id" 12346 "type" "Type-2"}] (compromise-indicator/get-all minimal-indicator-data "Type-2")))
+    (is (= [] (compromise-indicator/get-all minimal-indicator-data "not-an-actual-type")))))
 
 (deftest test-indicator-search
+  (testing "search with nil params"
+    (is (= [] (compromise-indicator/search minimal-indicator-data nil))))
+
   (testing "search with no params"
     (is (= [] (compromise-indicator/search minimal-indicator-data {}))))
+
+  (testing "search with bad params"
+    (is (= [] (compromise-indicator/search minimal-indicator-data "foo"))))
+
+  (testing "search with invalid params"
+    (is (= [] (compromise-indicator/search minimal-indicator-data {:does-not-exist "in source data"}))))
 
   (testing "search with a single search field"
     (is (= [{"id" 12345 "type" "Type1"} {"id" 41234 "type" "Type1" "author_name" "carefulresearcher"}] (compromise-indicator/search minimal-indicator-data {"type" "Type1"}))))
