@@ -12,8 +12,9 @@ This repository has started as an exercise in demonstrating the building/organiz
 
 With more time, I'm considering looking at some of the following goals
 
+* More testing!
 * Improve the indicator search capability (allowing multiple criteria per field, options to AND/OR, and include more fields from the source data)
-* Continue refactoring to see if there are bits of the rest-api (Pedestal) that can be extracted to Polylith components cleanly and better leverage Clojure's Component library across Polylith components
+* Continue refactoring to see if there are bits of the rest-api (such as Pedestal) that can be extracted to Polylith components cleanly and better leverage Clojure's Component library across Polylith components
 * Add a new component for the indicator lookup/search that uses a database component as a backend (seeded by the source data). Might consider Sqlite, Datalevin, XTDB, or something similar. 
 * Add an alternative logging component that uses another logger more condusive to observability
 * Expriment with how an upgrade of something significant (like new major version of Pedestal) would be supported by Polylith
@@ -36,7 +37,7 @@ You can also get in touch with the Polylith Team on [Slack](https://clojurians.s
 
 This project keeps [Architecture Decision Records](https://adr.github.io) to document why many decisions were made. View them in the [`docs/decisions`](docs/decisions/) directory.
 
-There were also a number of resources used in building this for reference and ideas.  See [citations](citations)
+There were also a number of resources used in building this for reference and ideas.  See [references](/references.md)
 
 ## Building/Running
 
