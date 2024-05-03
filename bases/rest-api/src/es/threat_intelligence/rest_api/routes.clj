@@ -23,7 +23,7 @@
        :route-name :indicators-search]
       ["/indicators/:id" :get [interceptors/coerce-body-interceptor
                                interceptors/content-negotiation-interceptor
-                               http/json-body
-                               indicator-routes/get-indicators-interceptor]
+                               indicator-routes/get-indicators-interceptor
+                               http/json-body]
        :route-name :indicators-item-view
        :constraints indicator-id]}))
