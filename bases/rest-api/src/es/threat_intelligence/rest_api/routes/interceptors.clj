@@ -1,6 +1,7 @@
 (ns es.threat-intelligence.rest-api.routes.interceptors
   (:require [io.pedestal.http.content-negotiation :as content-negotiation]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [es.threat-intelligence.feed.interface :as feed]))
 
 ;; Limit which content types this api supports
 (def supported-types ["application/json"])
@@ -40,3 +41,9 @@
             (if (get-in context [:response :headers "Content-Type"])
               context
               (update-in context [:response] coerce-to (accepted-type context))))})
+
+(def feed-interceptor
+  {:name :feed-interceptor
+   :enter (fn [context]
+            (fn [context]
+              (update context :request assoc :indicators feed/indicators)))})

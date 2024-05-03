@@ -1,4 +1,6 @@
-(ns es.threat-intelligence.compromise-indicator.core)
+(ns es.threat-intelligence.compromise-indicator.core
+  (:require [clojure.data :as data]
+            [es.threat-intelligence.log.interface :as log]))
 
 (defn find-by-id
   "Given indicator data and the unique identifier of a Compromise Indicatgor,
@@ -16,7 +18,23 @@
   ([indicator-data]
    (get-all indicator-data nil))
   ([indicator-data type-filter]
-   (if type-filter
-     (->> indicator-data
-          (filter #(= (% "type") type-filter)))
-     indicator-data)))
+   (do
+     (log/info "get-all called with type-filter: " type-filter)
+     (if type-filter
+       (->> indicator-data
+            (filter #(= (% "type") type-filter)))
+       indicator-data))))
+
+(defn search
+  "Search indicators based on a hash of one or more criteria"
+  [indicator-data search-criteria]
+  (let [modified-search (clojure.walk/stringify-keys search-criteria)]
+    (do
+      ;; (log/info "search called with criteria:" (keys modified-search))
+      (filter (fn [indicator]
+                (let [[_ _ same] (clojure.data/diff indicator modified-search)]
+                  (not (empty? same))))
+              indicator-data))))
+
+(comment
+  (get-all [{"type" "FileHash-SHA256"}] "FileHash-SHA256"))

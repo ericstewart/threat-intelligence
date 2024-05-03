@@ -17,3 +17,11 @@
    (get-all indicator-data nil))
   ([indicator-data type-filter]
    (core/get-all indicator-data type-filter)))
+
+
+(defn search
+  "Search indicators based on a hash of one or more criteria"
+  ([indicator-data]
+   (search indicator-data {}))
+  ([indicator-data search-criteria]
+   (core/search indicator-data search-criteria)))

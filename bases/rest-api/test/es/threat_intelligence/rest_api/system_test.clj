@@ -87,7 +87,7 @@
             body-json (json/read-str body)]
 
         (is (= 200 status) "should be a successful response")
-        (is (= "application/json" (headers "Content-Type")) "should be a json response")
+        (is (= "application/json;charset=UTF-8" (headers "Content-Type")) "should be a json response")
         (is (= {"id" 12346 "type" "FileHash-SHA256"} body-json) "body should contain the specific record")))
 
     (testing "GET on /indicators/:id with id that doesn't exist"
@@ -103,9 +103,34 @@
     (testing "GET on /indicators/:id with non numeric id"
       (let [service (service-fn sut)
             {:keys [status body headers] :as response}
-            (response-for service :get (url-for :indicators-item-view :path-params {:id "alphaid"}))
-            body-json (json/read-str body)]
+            (response-for service :get (url-for :indicators-item-view :path-params {:id "alphaid"}))]
 
         (is (= 404 status) "should be a not found response")
-        (is (= "application/json" (headers "Content-Type")) "should be a json response")
-        (is (= nil body-json) "body should be empty when not found")))))
+        (is (= "text/plain" (headers "Content-Type")) "should be a plain text response")
+        (is (= "Not Found" body) "body should be empty when not found")))))
+
+(deftest test-indicator-search
+  (with-system [sut (sut/new-system :test)]
+    (testing "search with no params"
+      (let [service (service-fn sut)
+            url (url-for :indicators-search)
+            {:keys [status body headers] :as response}
+            (response-for service :post url :body "{}")
+            body-json (json/read-str body)]
+
+        (is (= "/indicators/search" url))
+        (is (= 200 status) "should be a not found response")
+        (is (= "application/json;charset=UTF-8" (headers "Content-Type")) "should be a json response")
+        (is (= [] body-json))))
+
+    (testing "search with params"
+      (let [service (service-fn sut)
+            url (url-for :indicators-search)
+            {:keys [status body headers] :as response}
+            (response-for service :post url :body (json/write-str {"type" "IPv4"}) :headers {"Content-Type" "application/json" "Accept" "application/json"})
+            body-json (json/read-str body)]
+
+        (is (= "/indicators/search" url))
+        (is (= 200 status) "should be a not found response")
+        (is (= "application/json;charset=UTF-8" (headers "Content-Type")) "should be a json response")
+        (is (= [{"id" 12345 "type" "IPv4"} {"id" 41234 "type" "IPv4"}] body-json))))))

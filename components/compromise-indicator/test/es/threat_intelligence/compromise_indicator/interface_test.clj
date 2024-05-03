@@ -3,7 +3,7 @@
             [es.threat-intelligence.compromise-indicator.interface :as compromise-indicator]))
 
 (def empty-indicator-data [])
-(def minimal-indicator-data [{"id" 12345 "type" "Type1"} {"id" 12346 "type" "Type-2"} {"id" 41234}])
+(def minimal-indicator-data [{"id" 12345 "type" "Type1"} {"id" 12346 "type" "Type-2"} {"id" 41234 "type" "Type1" "author_name" "carefulresearcher"}])
 
 (deftest test-find-by-id-bad-inputs
   (testing "find-by-id with bad inputs"
@@ -23,5 +23,15 @@
 (deftest test-get-all-with-type-filtering
   (testing "get all with type filtering"
     (is (= empty-indicator-data (compromise-indicator/get-all empty-indicator-data "Type2")))
-    (is (= [{"id" 12345 "type" "Type1"}] (compromise-indicator/get-all minimal-indicator-data "Type1")))
+    (is (= [{"id" 12345 "type" "Type1"} {"id" 41234 "type" "Type1" "author_name" "carefulresearcher"}] (compromise-indicator/get-all minimal-indicator-data "Type1")))
     (is (= [{"id" 12346 "type" "Type-2"}] (compromise-indicator/get-all minimal-indicator-data "Type-2")))))
+
+(deftest test-indicator-search
+  (testing "search with no params"
+    (is (= [] (compromise-indicator/search minimal-indicator-data {}))))
+
+  (testing "search with a single search field"
+    (is (= [{"id" 12345 "type" "Type1"} {"id" 41234 "type" "Type1" "author_name" "carefulresearcher"}] (compromise-indicator/search minimal-indicator-data {"type" "Type1"}))))
+
+  (testing "search with multiple search fields"
+    (is (= [{"id" 12346 "type" "Type-2"} {"id" 41234 "type" "Type1" "author_name" "carefulresearcher"}] (compromise-indicator/search minimal-indicator-data {"type" "Type-2" "author_name" "carefulresearcher"})) "should match against any field values")))
