@@ -12,12 +12,15 @@ This repository has started as an exercise in demonstrating the building/organiz
 
 With more time, I'm considering looking at some of the following goals
 
+* Leverage *all* of the data in the seed file (e.g. author, tags, etc)
 * More testing!
+* Naming (are we ever happy with naming?).  Having more experience, especially with Polylith, I'd like to adjust the naming of some things
 * Improve the indicator search capability (allowing multiple criteria per field, options to AND/OR, and include more fields from the source data)
 * Continue refactoring to see if there are bits of the rest-api (such as Pedestal) that can be extracted to Polylith components cleanly and better leverage Clojure's Component library across Polylith components
 * Add a new component for the indicator lookup/search that uses a database component as a backend (seeded by the source data). Might consider Sqlite, Datalevin, XTDB, or something similar. 
 * Add an alternative logging component that uses another logger more condusive to observability
-* Expriment with how an upgrade of something significant (like new major version of Pedestal) would be supported by Polylith
+* Explore better integration or use of the logging component by Pedestal
+* Experiment with how an upgrade of something significant (like new major version of Pedestal) would be supported by Polylith
 * Add to the development project to make interactive coding via the REPL/editor on components/bases easier 
 * Add a component for managing configuration
 
