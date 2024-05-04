@@ -8,10 +8,10 @@
                                com.stuartsierra/component.repl {:mvn/version "1.0.0"}
                                org.clojure/clojure {:mvn/version "1.11.3"}}}
 
-            :test {:extra-paths ["components/feed"
-                                 "components/compromise-indicator"
-                                 "components/log"
-                                 "bases/rest-api"]}
+            :test {:extra-paths ["components/feed/test"
+                                 "components/compromise-indicator/test"
+                                 "components/log/test"
+                                 "bases/rest-api/test"]}
 
 
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]
