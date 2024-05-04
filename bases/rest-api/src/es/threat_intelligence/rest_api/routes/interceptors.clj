@@ -1,6 +1,7 @@
 (ns es.threat-intelligence.rest-api.routes.interceptors
   (:require [io.pedestal.http.content-negotiation :as content-negotiation]
             [clojure.data.json :as json]
+            [es.threat-intelligence.log.interface :as log]
             [es.threat-intelligence.feed.interface :as feed]))
 
 ;; Limit which content types this api supports
@@ -15,7 +16,8 @@
   (case content-type
     "text/html" body
     "text/plain" body
-    "application/json" (json/write-str body)))
+    "application/json" (json/write-str body)
+    body))
 
 (defn accepted-type
   "Determine the desired content-type based on the request accept
@@ -27,11 +29,14 @@
   "Coerce the response content and set the Content-Type header
    based on the accept header."
   [response content-type]
-  (-> response
-      (update :body transform-content content-type)
-      (assoc-in [:headers "Content-Type"] content-type)))
+  (if (get-in response [:body])
+    (-> response
+        (update :body transform-content content-type)
+        (assoc-in [:headers "Content-Type"] content-type))
+    (-> response
+        (assoc-in [:headers "Content-Type"] nil))))
 
-;; Interceptor to coerce the response body to the desired ctonent type.
+;; Interceptor to coerce the response body to the desired conent type.
 ;;
 ;; Respects existing Content-Type header if already set, otherwise attempts
 ;; to determine the thype based on the accept header or default.

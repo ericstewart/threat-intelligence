@@ -8,16 +8,10 @@
       (io/reader)
       (json/parse-stream)))
 
-(def indicators
-  (->> source
-       (reduce (fn [coll val]
-                 (conj coll (get-in val ["indicators"]))) [])
-       flatten))
-
 (defn feed-items
   "Fetch all indicators from the seed data"
   []
-  indicators)
+  source)
 
 (comment
   (take 1 (feed-items))

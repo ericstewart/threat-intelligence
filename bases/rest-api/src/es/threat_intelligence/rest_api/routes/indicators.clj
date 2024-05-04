@@ -18,7 +18,7 @@
                   response (if indicators
                              (route-utils/ok indicators)
                              (route-utils/not-found nil))]
-              (log/info :indicators-get {:type-filter type-filter})
+              (log/info :indicators-get {:type-filter type-filter :indicator-id indicator-id})
               (assoc context :response response)))})
 
 (def indicator-search-interceptor

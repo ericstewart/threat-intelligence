@@ -93,12 +93,12 @@
     (testing "GET on /indicators/:id with id that doesn't exist"
       (let [service (service-fn sut)
             {:keys [status body headers] :as response}
-            (response-for service :get (url-for :indicators-item-view :path-params {:id 99999}))
-            body-json (json/read-str body)]
+            (response-for service :get (url-for :indicators-item-view :path-params {:id 99999}))]
+            ;; body-json (json/read-str body)]
 
         (is (= 404 status) "should indicate that the resource doesn't exist")
-        (is (= "application/json" (headers "Content-Type")) "should be a json response")
-        (is (= nil body-json) "body should be empty")))
+        (is (= nil (headers "Content-Type")) "should have no content type")
+        (is (= "" body) "body should be empty when not found")))
 
     (testing "GET on /indicators/:id with non numeric id"
       (let [service (service-fn sut)
@@ -106,8 +106,8 @@
             (response-for service :get (url-for :indicators-item-view :path-params {:id "alphaid"}))]
 
         (is (= 404 status) "should be a not found response")
-        (is (= "text/plain" (headers "Content-Type")) "should be a plain text response")
-        (is (= "Not Found" body) "body should be empty when not found")))))
+        (is (= nil (headers "Content-Type")) "should have no content type")
+        (is (= "" body) "body should be empty when not found")))))
 
 (deftest test-indicator-search
   (with-system [sut (sut/new-system :test)]

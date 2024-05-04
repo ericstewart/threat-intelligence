@@ -6,9 +6,11 @@
   "Given indicator data and the unique identifier of a Compromise Indicatgor,
   returns a Map representing the data for the indicator."
   [indicator-data indicator-id]
-  (->> indicator-data
-       (filter #(= (str (% "id")) (str indicator-id)))
-       first))
+  (do
+    (log/info "find-by-id called with id:" indicator-id)
+    (->> indicator-data
+         (filter #(= (str (% "id")) (str indicator-id)))
+         first)))
 
 (defn get-all
   "Return all indicators.
@@ -30,7 +32,7 @@
   [indicator-data search-criteria]
   (let [modified-search (clojure.walk/stringify-keys search-criteria)]
     (do
-      ;; (log/info "search called with criteria:" (keys modified-search))
+      (log/info "search called with criteria for :" (str (keys modified-search)))
       (filter (fn [indicator]
                 (let [[_ _ same] (clojure.data/diff indicator modified-search)]
                   (not (empty? same))))

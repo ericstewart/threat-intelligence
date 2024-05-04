@@ -9,6 +9,7 @@
 
 (defrecord Pedestal [service-map service]
   component/Lifecycle
+
   (start [this]
     (if service
       this
