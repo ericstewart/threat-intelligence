@@ -136,26 +136,28 @@
     ;; getting a 200 via the following test, but trying this with curl results in a 500.
     #_(testing "search with invalid payload"
         (let [service (service-fn sut)
-              url (url-for :indicators-search :headers {"Content-Type" "application/json"})
+              url (url-for :indicators-search)
               {:keys [status body headers] :as response}
-              (response-for service :post url :body "{\"foo: 1234")]
+              (response-for service
+                            :post url
+                            :body "{\"foo: 1234"
+                            :headers {"Content-Type" "application/json" "Accept" "application/json"})]
 
           (is (= "/indicators/search" url))
           (is (= 400 status) "should be a bad request response")
-          #_(is (= "application/json;charset=UTF-8" (headers "Content-Type")) "should be a json response")
-          (is (= nil body))))
+          (is (= "text/plain" (headers "Content-Type")) "should be a text response")
+          (is (= "body must be a valid json object" body))))
 
-    (testing "search with params"
+    (testing "search with valid params"
       (let [service (service-fn sut)
             url (url-for :indicators-search)
             {:keys [status body headers] :as response}
             (response-for service
                           :post url
                           :body (json/write-str {"author_name" "janesmith"})
-                          :headers {"Content-Type" "application/json" "Accept" "application/json"})
-            body-json (json/read-str body)]
+                          :headers {"Content-Type" "application/json" "Accept" "application/json"})]
 
         (is (= "/indicators/search" url))
-        (is (= 200 status) "should be a not found response")
+        (is (= 200 status) "should be a success response")
         (is (= "application/json;charset=UTF-8" (headers "Content-Type")) "should be a json response")
-        (is (= [(minimal-indicator-data "abd8828")] body-json))))))
+        (is (= [(minimal-indicator-data "abd8828")] (json/read-str body)))))))

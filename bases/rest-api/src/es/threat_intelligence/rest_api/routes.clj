@@ -21,8 +21,7 @@
                                    indicator-routes/indicator-search-interceptor
                                    http/json-body]
        :route-name :indicators-search]
-      ["/indicators/:id" :get [
-                               interceptors/content-negotiation-interceptor
+      ["/indicators/:id" :get [interceptors/content-negotiation-interceptor
                                indicator-routes/get-indicators-interceptor
                                http/json-body]
        :route-name :indicators-item-view]}))
