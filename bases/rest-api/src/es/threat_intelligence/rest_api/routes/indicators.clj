@@ -10,7 +10,6 @@
    :enter (fn [context]
             (let [indicator-id (get-in context [:request :path-params :id])
                   type-filter (get-in context [:request :query-params :type])
-                  ;; indicator-db (get-in context [:indicators])
                   indicator-db (feed/indicators)
                   indicators (if indicator-id
                                (compromise-indicator/find-by-id indicator-db indicator-id)
@@ -25,7 +24,6 @@
   {:name ::indicator-search-interceptor
    :enter (fn [context]
             (let [search-params (get-in context [:request :json-params])
-                  ;; indicator-db (get-in context [:indicators])
                   indicator-db (feed/indicators)
                   indicators (compromise-indicator/search indicator-db search-params)
                   response (if indicators

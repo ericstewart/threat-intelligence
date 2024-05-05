@@ -3,7 +3,12 @@
             [es.threat-intelligence.compromise-indicator.interface :as compromise-indicator]))
 
 (def empty-indicator-data [])
-(def minimal-indicator-data [{"id" 12345 "type" "Type1"} {"id" 12346 "type" "Type-2"} {"id" 41234 "type" "Type1" "author_name" "carefulresearcher"}])
+(def minimal-indicator-data {"abd8828" {"id" "abd8828" "tlp" "green" "author_name" "janesmith" "indicators" [{"id" 12345 "type" "Type1"}]}
+
+                             "84ab8hy" {"id" "84ab8hy" "tlp" "white" "author_name" "alneumann" "indicators" [{"id" 12346 "type" "Type-2"}]}
+                             "abc123z" {"id" "abc123z" "tlp" "red" "author_name" "researcher" "indicators" [{"id" 41234 "type" "Type1"}]}})
+
+(defn minimal-indicator-db [] (vals minimal-indicator-data))
 
 (deftest test-find-by-id-bad-inputs
   (testing "find-by-id with bad inputs"
@@ -12,36 +17,40 @@
 
 (deftest test-find-by-id
   (testing "find-by-id with successful lookups"
-    (is (= nil (compromise-indicator/find-by-id minimal-indicator-data 1)) "should not find with nonexistent id")
-    (is (= {"id" 12345 "type" "Type1"} (compromise-indicator/find-by-id minimal-indicator-data 12345)) "should find with valid id")))
+    (is (= nil (compromise-indicator/find-by-id (minimal-indicator-db) 1)) "should not find with nonexistent id")
+    (is (= (minimal-indicator-data "abd8828") (compromise-indicator/find-by-id (minimal-indicator-db) "abd8828")) "should find with valid id")))
 
 (deftest test-get-all
   (testing "get all with no filtering"
-    (is (= empty-indicator-data (compromise-indicator/get-all empty-indicator-data)))
-    (is (= minimal-indicator-data (compromise-indicator/get-all minimal-indicator-data)))))
+    (is (= empty-indicator-data (compromise-indicator/get-all empty-indicator-data))) ;
+    (is (= (minimal-indicator-db) (compromise-indicator/get-all (minimal-indicator-db))))))
 
 (deftest test-get-all-with-type-filtering
   (testing "get all with type filtering"
     (is (= empty-indicator-data (compromise-indicator/get-all empty-indicator-data "Type2")))
-    (is (= [{"id" 12345 "type" "Type1"} {"id" 41234 "type" "Type1" "author_name" "carefulresearcher"}] (compromise-indicator/get-all minimal-indicator-data "Type1")))
-    (is (= [{"id" 12346 "type" "Type-2"}] (compromise-indicator/get-all minimal-indicator-data "Type-2")))
-    (is (= [] (compromise-indicator/get-all minimal-indicator-data "not-an-actual-type")))))
+    (is (= [(minimal-indicator-data "abd8828") (minimal-indicator-data "abc123z")]
+           (compromise-indicator/get-all (minimal-indicator-db) "Type1")))
+    (is (= [(minimal-indicator-data "84ab8hy")] (compromise-indicator/get-all (minimal-indicator-db) "Type-2")))
+    (is (= [] (compromise-indicator/get-all (minimal-indicator-db) "not-an-actual-type")))))
 
 (deftest test-indicator-search
   (testing "search with nil params"
-    (is (= [] (compromise-indicator/search minimal-indicator-data nil))))
+    (is (= [] (compromise-indicator/search (minimal-indicator-db) nil))))
 
   (testing "search with no params"
-    (is (= [] (compromise-indicator/search minimal-indicator-data {}))))
+    (is (= [] (compromise-indicator/search (minimal-indicator-db) {}))))
 
-  #_(testing "search with bad params"
-      (is (= [] (compromise-indicator/search minimal-indicator-data "foo"))))
+  (testing "search with bad params"
+    (is (= [] (compromise-indicator/search (minimal-indicator-db) "foo"))))
 
   (testing "search with invalid params"
-    (is (= [] (compromise-indicator/search minimal-indicator-data {:does-not-exist "in source data"}))))
+    (is (= [] (compromise-indicator/search (minimal-indicator-db) {:does-not-exist "in source data"}))))
 
   (testing "search with a single search field"
-    (is (= [{"id" 12345 "type" "Type1"} {"id" 41234 "type" "Type1" "author_name" "carefulresearcher"}] (compromise-indicator/search minimal-indicator-data {"type" "Type1"}))))
+    (is (= [(minimal-indicator-data "abd8828")]
+           (compromise-indicator/search (minimal-indicator-db) {"tlp" "green"}))))
 
   (testing "search with multiple search fields"
-    (is (= [{"id" 12346 "type" "Type-2"} {"id" 41234 "type" "Type1" "author_name" "carefulresearcher"}] (compromise-indicator/search minimal-indicator-data {"type" "Type-2" "author_name" "carefulresearcher"})) "should match against any field values")))
+    (is (= [(minimal-indicator-data "84ab8hy") (minimal-indicator-data "abc123z")]
+           (compromise-indicator/search (minimal-indicator-db) {"author_name" "researcher" "tlp" "white"}))
+        "should match against any field values")))

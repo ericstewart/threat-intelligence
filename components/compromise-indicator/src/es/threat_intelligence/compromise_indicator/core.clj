@@ -1,6 +1,15 @@
 (ns es.threat-intelligence.compromise-indicator.core
   (:require [clojure.data :as data]
+            [clojure.walk :as walk]
             [es.threat-intelligence.log.interface :as log]))
+
+(defn filter-on-type
+  [type-filter indicator-data]
+  (filterv (fn [ioc]
+              (some (fn [ind]
+                      (= type-filter (ind "type")))
+                    (get-in ioc ["indicators"])))
+           indicator-data))
 
 (defn find-by-id
   "Given indicator data and the unique identifier of a Compromise Indicatgor,
@@ -24,19 +33,22 @@
      (log/info "get-all called with type-filter: " type-filter)
      (if type-filter
        (->> indicator-data
-            (filter #(= (% "type") type-filter)))
+            (filter-on-type type-filter))
        indicator-data))))
 
 (defn search
   "Search indicators based on a hash of one or more criteria"
   [indicator-data search-criteria]
-  (let [modified-search (clojure.walk/stringify-keys search-criteria)]
-    (do
-      (log/info "search called with criteria for :" (str (keys modified-search)))
-      (filter (fn [indicator]
-                (let [[_ _ same] (clojure.data/diff indicator modified-search)]
-                  (not (empty? same))))
-              indicator-data))))
+  (try
+    (let [modified-search (clojure.walk/stringify-keys search-criteria)]
+      (do
+        (log/info "search called with criteria for :" (str (keys modified-search)))
+        (filterv (fn [indicator]
+                   (let [[_ _ same] (clojure.data/diff indicator modified-search)]
+                     (not (empty? same))))
+                 indicator-data)))
+    (catch java.lang.ClassCastException e [])))
 
 (comment
-  (get-all [{"type" "FileHash-SHA256"}] "FileHash-SHA256"))
+  (get-all [{"type" "FileHash-SHA256"}] "FileHash-SHA256")
+  (get-all [{"id" "foo" "indicators" [{"type" "FileHash-SHA256"}]}] "FileHash-SHA256"))
