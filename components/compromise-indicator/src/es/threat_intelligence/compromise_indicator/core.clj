@@ -4,31 +4,27 @@
             [es.threat-intelligence.log.interface :as log]))
 
 (defn filter-nonmatching-indicators
+  "Map each Indicator of Compromise, filtering out any child indicators that do not match the criteria"
   [type-filter indicator-data]
-  (log/info "filter-nonmatching")
   (mapv (fn [ioc]
-          (do
-            (log/info ioc)
-            (update-in ioc ["indicators"]
-                       (fn [old-indicators]
-                         (filterv (fn [ind] (= type-filter (ind "type")))
-                                  old-indicators)))))
+          (update-in ioc ["indicators"]
+                      (fn [old-indicators]
+                        (filterv (fn [ind] (= type-filter (ind "type")))
+                                old-indicators))))
         indicator-data))
 
 
 
 (defn filter-on-type
+  "filter the compromises based on whether they contain on indicator of the specified type"
   [type-filter indicator-data]
   (->> indicator-data
        (filterv (fn [ioc]
                   (some (fn [ind]
                           (= type-filter (ind "type")))
                         (get-in ioc ["indicators"]))))
-       (filter-nonmatching-indicators type-filter)
-       #_(mapv (fn [ioc])
-               (update-in ioc ["indicators"]
-                          #(filterv (fn [ind] (= type-filter (ind "type")))
-                                    (get-in % ["indicators"]))))))
+       (filter-nonmatching-indicators type-filter)))
+
 
 (defn find-by-id
   "Given indicator data and the unique identifier of a Compromise Indicatgor,
