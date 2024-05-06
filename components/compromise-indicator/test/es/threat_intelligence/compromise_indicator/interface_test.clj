@@ -10,6 +10,10 @@
 
 (defn minimal-indicator-db [] (vals minimal-indicator-data))
 
+(deftest test-filter-nonmatching-indicators
+  (testing "filter-nonmatching-indicators"
+    (is (= [{"id" "1" "indicators" [{"type" "Type1"}]}] (compromise-indicator/filter-nonmatching-indicators "Type1" [{"id" "1" "indicators" [{"type" "Type1"} {"type" "Type2"}]}])))))
+
 (deftest test-find-by-id-bad-inputs
   (testing "find-by-id with bad inputs"
     (is (= nil (compromise-indicator/find-by-id empty-indicator-data nil)) "with nil id")

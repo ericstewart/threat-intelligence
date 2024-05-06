@@ -3,13 +3,32 @@
             [clojure.walk :as walk]
             [es.threat-intelligence.log.interface :as log]))
 
+(defn filter-nonmatching-indicators
+  [type-filter indicator-data]
+  (log/info "filter-nonmatching")
+  (mapv (fn [ioc]
+          (do
+            (log/info ioc)
+            (update-in ioc ["indicators"]
+                       (fn [old-indicators]
+                         (filterv (fn [ind] (= type-filter (ind "type")))
+                                  old-indicators)))))
+        indicator-data))
+
+
+
 (defn filter-on-type
   [type-filter indicator-data]
-  (filterv (fn [ioc]
-              (some (fn [ind]
-                      (= type-filter (ind "type")))
-                    (get-in ioc ["indicators"])))
-           indicator-data))
+  (->> indicator-data
+       (filterv (fn [ioc]
+                  (some (fn [ind]
+                          (= type-filter (ind "type")))
+                        (get-in ioc ["indicators"]))))
+       (filter-nonmatching-indicators type-filter)
+       #_(mapv (fn [ioc])
+               (update-in ioc ["indicators"]
+                          #(filterv (fn [ind] (= type-filter (ind "type")))
+                                    (get-in % ["indicators"]))))))
 
 (defn find-by-id
   "Given indicator data and the unique identifier of a Compromise Indicatgor,
