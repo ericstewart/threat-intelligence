@@ -15,7 +15,12 @@
 
 
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]
-                   :extra-deps {polylith/clj-poly {:mvn/version "0.2.18"}}}
+                   :extra-deps {polylith/clj-poly {:mvn/version "0.2.19"}
+                                polylith-kaocha/test-runner
+                                {:git/url "https://github.com/imrekoszo/polylith-kaocha"
+                                 :git/tag "v0.8.4"
+                                 :git/sha "f096de8"
+                                 :deps/root "projects/test-runner"}}}
 
             :build {:deps {io.github.clojure/tools.build {:mvn/version "0.9.6"}
                            org.clojure/tools.deps {:mvn/version "0.19.1421"}}
